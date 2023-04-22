@@ -2,6 +2,7 @@ package com.example.AisbergTelegramBot;
 
 import com.example.AisbergTelegramBot.components.BotCommands;
 import com.example.AisbergTelegramBot.components.Buttons;
+import com.example.AisbergTelegramBot.components.Commands;
 import com.example.AisbergTelegramBot.config.BotConfig;
 import com.example.AisbergTelegramBot.config.CommandsConfig;
 import jakarta.validation.constraints.NotNull;
@@ -18,16 +19,16 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Slf4j
 @Component
-public class Bot extends TelegramLongPollingBot implements BotCommands {
+public class Bot extends TelegramLongPollingBot{
      final BotConfig config;
-     final CommandsConfig commandsConfig;
+     final Commands commands;
 
-    public Bot(BotConfig config, CommandsConfig commandsConfig) {
+    public Bot(BotConfig config, Commands commands) {
         this.config = config;
-        this.commandsConfig = commandsConfig;
-        commandsConfig.getCommands().entrySet().forEach(entry-> System.out.println(entry.getKey() + "-" + entry.getValue()));
+        this.commands = commands;
+
         try {
-            this.execute(new SetMyCommands(LIST_OF_COMMANDS, new BotCommandScopeDefault(), null));
+            this.execute(new SetMyCommands(commands.getListOfCommands(), new BotCommandScopeDefault(), null));
         } catch (TelegramApiException e){
             log.error(e.getMessage());
         }
@@ -70,7 +71,7 @@ public class Bot extends TelegramLongPollingBot implements BotCommands {
                 startBot(chatId, userName);
                 break;
             case "/help":
-                sendHelpText(chatId, HELP_TEXT);
+                sendHelpText(chatId, commands.HELP_TEXT);
                 break;
             default: break;
         }
@@ -79,7 +80,7 @@ public class Bot extends TelegramLongPollingBot implements BotCommands {
     private void startBot(long chatId, String userName) {
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
-        message.setText("Приветствуем от лица ООО Айсберг, " + userName + "! Я Telegram bot.");
+        message.setText("HELLO, " + userName + "! I'am Telegram bot.");
         message.setReplyMarkup(Buttons.inlineMarkup());
 
         try {

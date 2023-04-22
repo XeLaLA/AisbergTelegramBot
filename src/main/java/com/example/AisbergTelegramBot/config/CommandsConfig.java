@@ -6,6 +6,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Configuration;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Configuration
@@ -13,5 +14,10 @@ import java.util.Map;
 @EnableConfigurationProperties
 @ConfigurationProperties(prefix = "botcommands")
 public class CommandsConfig {
-    Map<String, String> commands;
+    private Map<String, String> commands;
+    public List<String> getListCommands() {
+        return (List<String>) commands.keySet();
+    }
+
+    public
 }
