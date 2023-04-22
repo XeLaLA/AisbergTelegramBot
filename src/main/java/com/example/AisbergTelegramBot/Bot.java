@@ -29,7 +29,7 @@ public class Bot extends TelegramLongPollingBot implements BotCommands {
         }
     }
     @Override
-    public String getBotUsername() { return config.getBotName(); }
+    public String getBotUsername() { return config.getName(); }
     @Override
     public String getBotToken() { return config.getToken(); }
     @Override
