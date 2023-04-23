@@ -21,10 +21,12 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 public class Bot extends TelegramLongPollingBot{
      final BotConfig config;
      final BotCommands commands;
+     Buttons buttons;
 
-    public Bot(BotConfig config, BotCommandsImp commands) {
+    public Bot(BotConfig config, BotCommands commands, Buttons buttons) {
         this.config = config;
         this.commands = commands;
+        this.buttons = buttons;
 
         try {
             this.execute(new SetMyCommands(commands.getListOfCommands(), new BotCommandScopeDefault(), null));
@@ -80,7 +82,7 @@ public class Bot extends TelegramLongPollingBot{
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
         message.setText("HELLO, " + userName + "! I'am Telegram bot.");
-        message.setReplyMarkup(Buttons.inlineMarkup());
+        message.setReplyMarkup(buttons.inlineMarkup());
 
         try {
             execute(message);

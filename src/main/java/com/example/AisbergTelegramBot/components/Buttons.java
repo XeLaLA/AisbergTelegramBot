@@ -1,17 +1,16 @@
 package com.example.AisbergTelegramBot.components;
 
-import com.example.AisbergTelegramBot.components.supportTools.SupportTools;
 import com.example.AisbergTelegramBot.config.BotCommandsConfig;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 
+@Component
 public class Buttons {
     private final BotCommandsConfig botCommandsConfig;
 
@@ -27,19 +26,16 @@ public class Buttons {
         //Список со списками комманд по которому создаем список кнопок
         List<List<String>>  rowInLineCommand = splitArray(listCommands, splitSize);
         //Список со списками кнопок
-        List<List<InlineKeyboardButton>> rowsInLine = rowInLineCommand
+        return rowInLineCommand
                 .stream()
-                .map(array ->
-                    array.stream().map(el->
-                    {
-                        InlineKeyboardButton button = new InlineKeyboardButton(el);
-                        button.setCallbackData("/"+el);
-                        return button;
-                    }).collect(Collectors.toList())
-                ).collect(Collectors.toList());
-
-
-        return rowsInLine;
+                .map(array -> array.stream()
+                        .map(el ->{
+                            InlineKeyboardButton button = new InlineKeyboardButton(el);
+                            button.setCallbackData("/"+el);
+                            return button;
+                        })
+                        .collect(Collectors.toList()))
+                .collect(Collectors.toList());
     }
 
     private <T> List<List <T>> splitArray(List<T> array, int splitSize) {
