@@ -2,9 +2,8 @@ package com.example.AisbergTelegramBot;
 
 import com.example.AisbergTelegramBot.components.BotCommands;
 import com.example.AisbergTelegramBot.components.Buttons;
-import com.example.AisbergTelegramBot.components.Commands;
+import com.example.AisbergTelegramBot.components.BotCommandsImp;
 import com.example.AisbergTelegramBot.config.BotConfig;
-import com.example.AisbergTelegramBot.config.CommandsConfig;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -21,9 +20,9 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @Component
 public class Bot extends TelegramLongPollingBot{
      final BotConfig config;
-     final Commands commands;
+     final BotCommands commands;
 
-    public Bot(BotConfig config, Commands commands) {
+    public Bot(BotConfig config, BotCommandsImp commands) {
         this.config = config;
         this.commands = commands;
 

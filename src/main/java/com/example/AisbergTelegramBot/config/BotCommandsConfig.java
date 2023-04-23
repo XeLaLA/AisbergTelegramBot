@@ -5,19 +5,17 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Configuration
 @Data
 @EnableConfigurationProperties
 @ConfigurationProperties(prefix = "botcommands")
-public class CommandsConfig {
+public class BotCommandsConfig {
     private Map<String, String> commands;
-    public List<String> getListCommands() {
-        return (List<String>) commands.keySet();
+    public Set<String> getListCommands(){
+        if(commands == null && commands.keySet().isEmpty()) return null;
+        return commands.keySet();
     }
-
-    public
 }

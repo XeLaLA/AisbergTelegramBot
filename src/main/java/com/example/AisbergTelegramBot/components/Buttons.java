@@ -1,47 +1,72 @@
 package com.example.AisbergTelegramBot.components;
 
-import com.example.AisbergTelegramBot.config.CommandsConfig;
+import com.example.AisbergTelegramBot.components.supportTools.SupportTools;
+import com.example.AisbergTelegramBot.config.BotCommandsConfig;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 public class Buttons {
-    private final CommandsConfig commandsConfig;
-//    private Map<String, InlineKeyboardButton> buttons = new HashMap<String, InlineKeyboardButton>();
-    private static final InlineKeyboardButton START_BUTTON = new InlineKeyboardButton("Start");
-    private static final InlineKeyboardButton HELP_BUTTON = new InlineKeyboardButton("Help");
+    private final BotCommandsConfig botCommandsConfig;
 
-    public Buttons(CommandsConfig commandsConfig) {
-        this.commandsConfig = commandsConfig;
-//        commands.getCommandsConfig()
-//                .getCommands()
-//                .keySet()
-//                .forEach(key->buttons.put(key, new InlineKeyboardButton(key)));
+    public Buttons(BotCommandsConfig botCommandsConfig) {
+        this.botCommandsConfig = botCommandsConfig;
     }
 
-    private List<List<InlineKeyboardButton>> createButtons(List<String> listCommands){
+    //Получить список со списками кнопок, где кол-во = кол-во строк с кнопками в боте
+    //вложенные списки содержат кнопки для отображения
+    //@param listCommands - список комманд для кнопок для привязик
+    //@param splitSize - кол-во кнопок в одной строке
+    private List<List<InlineKeyboardButton>> getListRowsButtonsInLine(List<String> listCommands, int splitSize) {
+        //Список со списками комманд по которому создаем список кнопок
+        List<List<String>>  rowInLineCommand = splitArray(listCommands, splitSize);
+        //Список со списками кнопок
+        List<List<InlineKeyboardButton>> rowsInLine = rowInLineCommand
+                .stream()
+                .map(array ->
+                    array.stream().map(el->
+                    {
+                        InlineKeyboardButton button = new InlineKeyboardButton(el);
+                        button.setCallbackData("/"+el);
+                        return button;
+                    }).collect(Collectors.toList())
+                ).collect(Collectors.toList());
 
 
+        return rowsInLine;
+    }
 
-        return null;
+    private <T> List<List <T>> splitArray(List<T> array, int splitSize) {
+
+        int numberOfArrays = array.size() / splitSize;
+        int remainder = array.size() % splitSize;
+
+        int start = 0;
+        int end = 0;
+
+        List<List<T>> list = new ArrayList<>();
+        for (int i = 0; i < numberOfArrays; i++) {
+            end += splitSize;
+            list.add(array.subList(start, end));
+            start = end;
+        }
+
+        if(remainder > 0) {
+            list.add(array.subList(start, array.size()));
+        }
+        return list;
     }
 
     public InlineKeyboardMarkup inlineMarkup() {
 
-       // buttons.entrySet().forEach(entry -> entry.getValue().setCallbackData("/"+entry.getKey()));
-        List<String> listCommands =  commandsConfig.getListCommands();
-
-
-        List<InlineKeyboardButton> rowInline = List.of(START_BUTTON, HELP_BUTTON);
-        List<List<InlineKeyboardButton>> rowsInLine = List.of(rowInline);
-
         InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
-        markupInline.setKeyboard(rowsInLine);
+        markupInline.setKeyboard(getListRowsButtonsInLine(botCommandsConfig.getListCommands().stream().toList(),2));
 
         return markupInline;
     }
